@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://generativelanguage.googleapis.com;" />
   <title>CivicResolve — AI-Powered Citizen Grievance Management</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,92 +16,78 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     .spinner { border: 3px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; width: 22px; height: 22px; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:font-semibold">Skip to main content</a>
 
-  <!-- Top Navbar -->
-  <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
+  <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md" role="banner">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-emerald-400 flex items-center justify-center shadow-lg">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-emerald-400 flex items-center justify-center shadow-lg" aria-hidden="true">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
           </svg>
         </div>
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-lg font-extrabold tracking-tight">CivicResolve</h1>
-            <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">Gemini AI</span>
+            <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30">Gemini AI</span>
           </div>
-          <p class="text-xs text-slate-400">Citizen Grievance Reporting, Triage & Resolution</p>
+          <p class="text-xs text-slate-300">Citizen Grievance Reporting, Triage & Resolution</p>
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav class="flex items-center gap-1 bg-slate-800 p-1 rounded-xl">
-        <button id="nav-report" onclick="switchTab('report')" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition bg-blue-600 text-white">
-          Report Issue
-        </button>
-        <button id="nav-track" onclick="switchTab('track')" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition text-slate-300 hover:text-white">
-          Track Issues
-        </button>
-        <button id="nav-admin" onclick="switchTab('admin')" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition text-slate-300 hover:text-white">
-          Admin Console
-        </button>
+      <nav class="flex items-center gap-1 bg-slate-800 p-1 rounded-xl" aria-label="Primary navigation" role="tablist">
+        <button id="nav-report" role="tab" aria-controls="view-report" aria-selected="true" onclick="switchTab('report')" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition bg-blue-600 text-white">Report Issue</button>
+        <button id="nav-track" role="tab" aria-controls="view-track" aria-selected="false" onclick="switchTab('track')" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition text-slate-300 hover:text-white">Track Issues</button>
+        <button id="nav-admin" role="tab" aria-controls="view-admin" aria-selected="false" onclick="switchTab('admin')" class="tab-btn px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition text-slate-300 hover:text-white">Admin Console</button>
       </nav>
 
-      <!-- Gemini API Status Button -->
-      <button id="open-api-modal-btn" onclick="openApiModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium transition">
-        <span id="ai-status-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+      <button id="open-api-modal-btn" type="button" onclick="openApiModal()" aria-label="Configure Google Gemini API settings" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium transition">
+        <span id="ai-status-dot" class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true"></span>
         <span id="ai-status-text">Smart AI Active</span>
       </button>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
-    <!-- ==================== VIEW 1: CITIZEN REPORT ISSUE ==================== -->
-    <section id="view-report" class="fade-in">
+  <main id="main-content" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6" role="main">
+    <section id="view-report" role="tabpanel" aria-labelledby="nav-report" class="fade-in">
       <div class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Citizen Portal</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-700">Citizen Portal</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-0.5">Report a Civic Issue</h2>
           <p class="text-sm text-slate-600 mt-1">Describe a local infrastructure issue. Google Gemini automatically classifies the problem, detects urgency, and routes it to the right municipal department.</p>
         </div>
-        <!-- 1-Click Sample Presets -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="text-xs font-semibold text-slate-500">Quick Test:</span>
-          <button type="button" onclick="loadSample(0)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 font-medium shadow-sm transition">Pothole</button>
-          <button type="button" onclick="loadSample(1)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 font-medium shadow-sm transition">Garbage</button>
-          <button type="button" onclick="loadSample(2)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 font-medium shadow-sm transition">Streetlight</button>
-          <button type="button" onclick="loadSample(3)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:text-blue-600 font-medium shadow-sm transition">Water Leak</button>
+        <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Sample civic issue presets">
+          <span class="text-xs font-semibold text-slate-600">Quick Test:</span>
+          <button type="button" onclick="loadSample(0)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-700 font-medium shadow-sm transition">Pothole</button>
+          <button type="button" onclick="loadSample(1)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-700 font-medium shadow-sm transition">Garbage</button>
+          <button type="button" onclick="loadSample(2)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-700 font-medium shadow-sm transition">Streetlight</button>
+          <button type="button" onclick="loadSample(3)" class="text-xs px-2.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-700 font-medium shadow-sm transition">Water Leak</button>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Form Card -->
         <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
-          <form id="issue-form" class="space-y-4">
+          <form id="issue-form" class="space-y-4" aria-label="Citizen civic complaint form">
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">Issue Title *</label>
-              <input id="input-title" type="text" required placeholder="e.g., Deep pothole causing traffic near school gate" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+              <label for="input-title" class="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">Issue Title *</label>
+              <input id="input-title" name="title" type="text" required maxlength="140" autocomplete="off" placeholder="e.g., Deep pothole causing traffic near school gate" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">Location / Landmark *</label>
+                <label for="input-location" class="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">Location / Landmark *</label>
                 <div class="flex gap-2">
-                  <input id="input-location" type="text" required placeholder="e.g., 4th Cross, Gandhi Nagar" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
-                  <button type="button" id="gps-btn" onclick="detectLocation()" title="Use GPS Location" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold shrink-0 transition">
-                    GPS
-                  </button>
+                  <input id="input-location" name="location" type="text" required maxlength="160" placeholder="e.g., 4th Cross, Gandhi Nagar" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+                  <button type="button" id="gps-btn" onclick="detectLocation()" aria-label="Auto-fill location using browser GPS" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold shrink-0 transition">GPS</button>
                 </div>
               </div>
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">Category</label>
-                <select id="input-category" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
+                <label for="input-category" class="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">Category</label>
+                <select id="input-category" name="category" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm">
                   <option value="Auto-Detect">Auto-Detect with Gemini AI</option>
                   <option value="Roads & Potholes">Roads & Potholes</option>
                   <option value="Waste & Sanitation">Waste & Sanitation</option>
@@ -112,146 +100,121 @@
             </div>
 
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">Detailed Description *</label>
-              <textarea id="input-description" rows="4" required placeholder="Describe what happened, how long it has been an issue, and any safety hazards..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"></textarea>
+              <label for="input-description" class="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">Detailed Description *</label>
+              <textarea id="input-description" name="description" rows="4" required maxlength="1000" placeholder="Describe what happened, how long it has been an issue, and any safety hazards..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"></textarea>
             </div>
 
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wide text-slate-600 mb-1.5">Attach Photo Evidence (Optional)</label>
-              <input id="input-image" type="file" accept="image/*" onchange="handleImageUpload(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
+              <label for="input-image" class="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">Attach Photo Evidence (Optional)</label>
+              <input id="input-image" type="file" accept="image/*" onchange="handleImageUpload(event)" class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" />
               <div id="image-preview-wrap" class="hidden mt-3 relative inline-block">
-                <img id="image-preview" src="" alt="Preview" class="h-28 w-44 object-cover rounded-xl border border-slate-200 shadow-sm" />
-                <button type="button" onclick="removeImage()" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-600 text-white text-xs font-bold shadow">×</button>
+                <img id="image-preview" src="" alt="Uploaded civic issue preview" class="h-28 w-44 object-cover rounded-xl border border-slate-200 shadow-sm" />
+                <button type="button" onclick="removeImage()" aria-label="Remove uploaded photo" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-600 text-white text-xs font-bold shadow">×</button>
               </div>
             </div>
 
             <div class="pt-2 flex flex-col sm:flex-row gap-3">
-              <button type="button" id="btn-analyze" onclick="runAITriagePreview()" class="flex-1 px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition flex items-center justify-center gap-2">
-                <span>Analyze with Gemini AI</span>
-              </button>
-              <button type="submit" id="btn-submit" class="flex-1 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-md shadow-blue-600/20 transition">
-                Submit Grievance
-              </button>
+              <button type="button" id="btn-analyze" onclick="runAITriagePreview()" class="flex-1 px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition flex items-center justify-center gap-2">Analyze with Gemini AI</button>
+              <button type="submit" id="btn-submit" class="flex-1 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-md shadow-blue-600/20 transition">Submit Grievance</button>
             </div>
           </form>
         </div>
 
-        <!-- Live AI Triage Panel -->
-        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 flex flex-col justify-between">
+        <aside class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 flex flex-col justify-between" aria-label="AI Triage Results" aria-live="polite">
           <div>
             <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
               <div>
                 <h3 class="text-base font-bold text-slate-900">AI Triage Intelligence</h3>
-                <p class="text-xs text-slate-500">Real-time classification, priority & routing</p>
+                <p class="text-xs text-slate-600">Real-time classification, priority & routing</p>
               </div>
               <span id="res-engine" class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">Ready</span>
             </div>
 
-            <!-- Empty State -->
             <div id="triage-empty" class="py-10 text-center">
-              <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 mx-auto flex items-center justify-center mb-3">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+              <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 mx-auto flex items-center justify-center mb-3" aria-hidden="true">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </div>
-              <p class="text-sm font-semibold text-slate-700">Awaiting Complaint Details</p>
-              <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Click <strong>"Analyze with Gemini AI"</strong> or submit directly to see instant category, urgency score, and municipal department routing.</p>
+              <p class="text-sm font-semibold text-slate-800">Awaiting Complaint Details</p>
+              <p class="text-xs text-slate-600 mt-1 max-w-xs mx-auto">Click <strong>"Analyze with Gemini AI"</strong> or submit directly to see instant category, urgency score, and municipal department routing.</p>
             </div>
 
-            <!-- Loading State -->
-            <div id="triage-loading" class="hidden py-12 flex flex-col items-center justify-center gap-3">
-              <div class="spinner"></div>
+            <div id="triage-loading" class="hidden py-12 flex flex-col items-center justify-center gap-3" role="status">
+              <div class="spinner" aria-hidden="true"></div>
               <p class="text-sm font-semibold text-slate-700">Gemini AI is analyzing public impact...</p>
             </div>
 
-            <!-- Result State -->
             <div id="triage-result" class="hidden space-y-4 fade-in">
               <div class="grid grid-cols-2 gap-3">
                 <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <p class="text-[11px] font-semibold uppercase text-slate-500">Detected Category</p>
+                  <p class="text-[11px] font-semibold uppercase text-slate-600">Detected Category</p>
                   <p id="res-category" class="text-sm font-bold text-slate-900 mt-1">—</p>
                 </div>
                 <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                  <p class="text-[11px] font-semibold uppercase text-slate-500">Priority Level</p>
+                  <p class="text-[11px] font-semibold uppercase text-slate-600">Priority Level</p>
                   <p id="res-priority" class="text-sm font-extrabold mt-1">—</p>
                 </div>
               </div>
 
               <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                 <div class="flex justify-between text-xs font-semibold mb-1.5">
-                  <span class="text-slate-600">Public Impact & Urgency Score</span>
+                  <span class="text-slate-700">Public Impact & Urgency Score</span>
                   <span id="res-score" class="text-slate-900 font-bold">0/100</span>
                 </div>
                 <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
                   <div id="res-score-bar" class="h-full bg-blue-600 rounded-full transition-all duration-500" style="width: 0%"></div>
                 </div>
-                <p class="text-[11px] text-slate-500 mt-1.5">Target Response SLA: <strong id="res-sla" class="text-slate-700">—</strong></p>
+                <p class="text-[11px] text-slate-600 mt-1.5">Target Response SLA: <strong id="res-sla" class="text-slate-800">—</strong></p>
               </div>
 
               <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200">
-                <p class="text-[11px] font-bold uppercase text-blue-700">Recommended Department</p>
+                <p class="text-[11px] font-bold uppercase text-blue-800">Recommended Department</p>
                 <p id="res-department" class="text-sm font-bold text-slate-900 mt-0.5">—</p>
               </div>
 
               <div class="space-y-2 text-xs">
                 <div>
-                  <p class="font-bold text-slate-700">AI Assessment:</p>
-                  <p id="res-reasoning" class="text-slate-600 mt-0.5 leading-relaxed">—</p>
+                  <p class="font-bold text-slate-800">AI Assessment:</p>
+                  <p id="res-reasoning" class="text-slate-700 mt-0.5 leading-relaxed">—</p>
                 </div>
                 <div>
-                  <p class="font-bold text-slate-700">Recommended First Action:</p>
-                  <p id="res-action" class="text-slate-600 mt-0.5 leading-relaxed">—</p>
+                  <p class="font-bold text-slate-800">Recommended First Action:</p>
+                  <p id="res-action" class="text-slate-700 mt-0.5 leading-relaxed">—</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-5 pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex items-center justify-between">
+          <div class="mt-5 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
             <span>End-to-end CivicResolve AI Workflow</span>
-            <button type="button" onclick="openApiModal()" class="text-blue-600 font-semibold hover:underline">Configure Gemini Key</button>
+            <button type="button" onclick="openApiModal()" class="text-blue-700 font-semibold hover:underline">Configure Gemini Key</button>
           </div>
-        </div>
+        </aside>
       </div>
     </section>
 
-    <!-- ==================== VIEW 2: ISSUE TRACKING DASHBOARD ==================== -->
-    <section id="view-track" class="hidden fade-in">
+    <section id="view-track" role="tabpanel" aria-labelledby="nav-track" class="hidden fade-in">
       <div class="mb-6">
-        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Public Transparency Portal</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Public Transparency Portal</span>
         <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-0.5">Issue Tracking Dashboard</h2>
         <p class="text-sm text-slate-600 mt-1">Track submitted civic grievances in real time from initial report through municipal resolution.</p>
       </div>
 
-      <!-- KPI Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold text-slate-500">Total Complaints</p>
-          <p id="stat-total" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold text-amber-600">Reported (Queued)</p>
-          <p id="stat-reported" class="text-2xl font-extrabold text-amber-600 mt-1">0</p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold text-blue-600">In Progress</p>
-          <p id="stat-progress" class="text-2xl font-extrabold text-blue-600 mt-1">0</p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold text-emerald-600">Resolved</p>
-          <p id="stat-resolved" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
-        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-slate-600">Total Complaints</p><p id="stat-total" class="text-2xl font-extrabold text-slate-900 mt-1">0</p></div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-amber-700">Reported (Queued)</p><p id="stat-reported" class="text-2xl font-extrabold text-amber-700 mt-1">0</p></div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-blue-700">In Progress</p><p id="stat-progress" class="text-2xl font-extrabold text-blue-700 mt-1">0</p></div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-emerald-700">Resolved</p><p id="stat-resolved" class="text-2xl font-extrabold text-emerald-700 mt-1">0</p></div>
       </div>
 
-      <!-- Filter Bar -->
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <input id="track-search" type="text" oninput="renderTrackDashboard()" placeholder="Search by Ticket ID, title, location, department..." class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
-        <select id="track-status-filter" onchange="renderTrackDashboard()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500">
+        <input id="track-search" type="search" aria-label="Search civic complaints" oninput="renderTrackDashboard()" placeholder="Search by Ticket ID, title, location, department..." class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+        <select id="track-status-filter" aria-label="Filter complaints by status" onchange="renderTrackDashboard()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500">
           <option value="All">All Statuses</option>
           <option value="Reported">Reported</option>
           <option value="In Progress">In Progress</option>
           <option value="Resolved">Resolved</option>
         </select>
-        <select id="track-priority-filter" onchange="renderTrackDashboard()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500">
+        <select id="track-priority-filter" aria-label="Filter complaints by priority" onchange="renderTrackDashboard()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-blue-500">
           <option value="All">All Priorities</option>
           <option value="Critical">Critical</option>
           <option value="High">High</option>
@@ -260,104 +223,23 @@
         </select>
       </div>
 
-      <!-- Complaints List -->
-      <div id="track-list" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+      <div id="track-list" class="grid grid-cols-1 md:grid-cols-2 gap-5" aria-live="polite"></div>
     </section>
 
-    <!-- ==================== VIEW 3: ADMIN DASHBOARD ==================== -->
-    <section id="view-admin" class="hidden fade-in">
+    <section id="view-admin" role="tabpanel" aria-labelledby="nav-admin" class="hidden fade-in">
       <div class="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Municipal Authority Console</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">Municipal Authority Console</span>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-0.5">Admin Triage & Resolution</h2>
           <p class="text-sm text-slate-600 mt-1">Review AI-prioritized grievances, assign statuses, add field updates, and monitor departmental workload.</p>
         </div>
         <div class="flex gap-2">
-          <button onclick="exportCSV()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">Export CSV</button>
-          <button onclick="resetDemoData()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-semibold transition">Reset Demo Data</button>
+          <button type="button" onclick="exportCSV()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition">Export CSV</button>
+          <button type="button" onclick="resetDemoData()" class="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-xs font-semibold transition">Reset Demo Data</button>
         </div>
       </div>
 
-      <!-- Admin KPI & Workload Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
         <div class="lg:col-span-5 grid grid-cols-2 gap-4">
-          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-            <p class="text-xs font-semibold text-slate-500">Active Open Issues</p>
-            <p id="admin-open" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
-          </div>
-          <div class="bg-white p-4 rounded-2xl border border-rose-200 bg-rose-50/40 shadow-sm">
-            <p class="text-xs font-semibold text-rose-600">Critical / High Alerts</p>
-            <p id="admin-critical" class="text-2xl font-extrabold text-rose-600 mt-1">0</p>
-          </div>
-          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-            <p class="text-xs font-semibold text-emerald-600">Resolution Rate</p>
-            <p id="admin-rate" class="text-2xl font-extrabold text-emerald-600 mt-1">0%</p>
-          </div>
-          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-            <p class="text-xs font-semibold text-indigo-600">Avg Impact Score</p>
-            <p id="admin-avg-score" class="text-2xl font-extrabold text-indigo-600 mt-1">0</p>
-          </div>
-        </div>
-
-        <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <h3 class="text-sm font-bold text-slate-800 mb-3">Department Workload Distribution</h3>
-          <div id="dept-chart" class="space-y-2.5"></div>
-        </div>
-      </div>
-
-      <!-- Admin Filters -->
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-5 flex flex-wrap gap-3">
-        <select id="admin-dept-filter" onchange="renderAdminDashboard()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-          <option value="All">All Departments</option>
-          <option value="Public Works & Roads Department">Public Works & Roads Department</option>
-          <option value="Solid Waste & Sanitation Department">Solid Waste & Sanitation Department</option>
-          <option value="Electrical & Streetlighting Division">Electrical & Streetlighting Division</option>
-          <option value="Water Supply & Drainage Board">Water Supply & Drainage Board</option>
-          <option value="Traffic Police & Public Safety">Traffic Police & Public Safety</option>
-          <option value="Parks & Urban Horticulture">Parks & Urban Horticulture</option>
-        </select>
-        <select id="admin-status-filter" onchange="renderAdminDashboard()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-          <option value="All">All Statuses</option>
-          <option value="Reported">Reported</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Resolved">Resolved</option>
-        </select>
-      </div>
-
-      <!-- Admin Management Queue -->
-      <div id="admin-list" class="space-y-4"></div>
-    </section>
-  </main>
-
-  <!-- Gemini API Key Modal -->
-  <div id="api-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-lg font-extrabold text-slate-900">Google Gemini AI Settings</h3>
-        <button onclick="closeApiModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">×</button>
-      </div>
-      <p class="text-xs text-slate-600 leading-relaxed mb-4">
-        CivicResolve works out-of-the-box with its built-in Smart AI Triage Engine. Add a free <strong>Google Gemini API Key</strong> (stored only in your browser session) to enable live <code>gemini-2.5-flash</code> text + image analysis.
-      </p>
-      <label class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Gemini API Key</label>
-      <input id="gemini-key-input" type="password" placeholder="AIzaSy..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-blue-500 mb-4" />
-      <div class="flex gap-2">
-        <button onclick="saveApiKey()" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition">Connect Live Gemini</button>
-        <button onclick="clearApiKey()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">Use Built-in AI</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast Container -->
-  <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
-
-  <footer class="border-t border-slate-200 bg-white py-4 mt-10">
-    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
-      <strong>CivicResolve</strong> — Built for PromptWars × GDG on-Campus PSG iTech | AI-Powered Citizen Grievance Management
-    </div>
-  </footer>
-
-  <script src="app.js"></script>
-</body>
-</html>
-
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-slate-600">Active Open Issues</p><p id="admin-open" class="text-2xl font-extrabold text-slate-900 mt-1">0</p></div>
+          <div class="bg-white p-4 rounded-2xl border border-rose-200 bg-rose-50/40 shadow-sm"><p class="text-xs font-semibold text-rose-700">Critical / High Alerts</p><p id="admin-critical" class="text-2xl font-extrabold text-r
